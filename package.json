@@ -1,0 +1,91 @@
+{
+  "name": "mdec",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "mdEC - schlanker Markdown Editor fuer GitHub Pages und Electron",
+  "author": "Thomas Lauer <thomas@lauer.io>",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env MDEC_DEV=1 electron .\"",
+    "electron:build": "cross-env MDEC_ELECTRON=1 tsc --noEmit && cross-env MDEC_ELECTRON=1 vite build",
+    "electron:pack": "npm run electron:build && electron-builder --dir",
+    "electron:dist": "npm run electron:build && electron-builder"
+  },
+  "dependencies": {
+    "docx": "^9.5.1",
+    "dompurify": "^3.2.7",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^0.545.0",
+    "marked": "^16.4.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16",
+    "wait-on": "^9.0.1"
+  },
+  "build": {
+    "appId": "io.lauer.mdec",
+    "productName": "mdEC",
+    "directories": {
+      "output": "release"
+    },
+    "electronDist": "node_modules/electron/dist",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.cjs"
+    },
+    "fileAssociations": [
+      {
+        "ext": "md",
+        "name": "Markdown",
+        "role": "Editor"
+      },
+      {
+        "ext": "markdown",
+        "name": "Markdown",
+        "role": "Editor"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName} Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}.${ext}"
+    }
+  }
+}

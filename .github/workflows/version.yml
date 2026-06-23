@@ -1,0 +1,43 @@
+name: Bump major version
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    # Nicht ausfuehren, wenn der Commit ausdruecklich ausgenommen ist oder
+    # selbst vom Bump stammt (verhindert eine Endlosschleife).
+    if: ${{ !contains(github.event.head_commit.message, '[skip version]') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Bump major version (+1)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          CURRENT=$(node -p "require('./package.json').version")
+          MAJOR=${CURRENT%%.*}
+          NEXT=$((MAJOR + 1))
+          echo "Version $CURRENT -> $NEXT.0.0"
+          # package.json und package-lock.json aktualisieren, ohne Git-Tag.
+          npm version "$NEXT.0.0" --no-git-tag-version --allow-same-version
+          git add package.json package-lock.json
+          git commit -m "chore: Hauptversion auf $NEXT erhoehen [skip version]"
+          git push
