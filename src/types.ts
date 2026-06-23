@@ -29,6 +29,11 @@ export interface MdECApi {
   saveFile(payload: { path?: string; name: string; content: string }): Promise<SaveResult>
   /** Speichern-unter-Dialog. */
   saveFileAs(payload: { name: string; content: string }): Promise<SaveResult>
+  /**
+   * Aktuellen Zustand an den Main-Prozess melden, damit dieser beim Beenden
+   * bei ungespeicherten Aenderungen nachfragen (und ggf. speichern) kann.
+   */
+  updateState(state: { dirty: boolean; name: string; content: string; path?: string }): void
   /** Beim Start uebergebene Datei (z. B. EXE-Argument). */
   onOpenFile(callback: (file: OpenedFile) => void): void
   /** Menue-Kommandos aus dem nativen Menue (oeffnen/speichern/export/...). */

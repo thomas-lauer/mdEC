@@ -14,6 +14,9 @@ contextBridge.exposeInMainWorld('mdECApi', {
   // Speichern-unter-Dialog.
   saveFileAs: (payload) => ipcRenderer.invoke('mdec:save-file-as', payload),
 
+  // Aktuellen Zustand (dirty/Pfad/Inhalt) an den Main-Prozess melden.
+  updateState: (state) => ipcRenderer.send('mdec:update-state', state),
+
   // Beim Start uebergebene Datei (EXE-Argument).
   onOpenFile: (callback) => {
     ipcRenderer.on('mdec:opened-file', (_event, file) => callback(file))

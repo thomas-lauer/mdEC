@@ -22,6 +22,8 @@ export default function App() {
   const isDesktop = typeof window !== 'undefined' && !!window.mdECApi
 
   const [content, setContent] = useState<string>(() => loadContent(SAMPLE_DOC))
+  // Zuletzt gespeicherter Stand (Basis fuer "ungespeicherte Aenderungen").
+  const [savedContent, setSavedContent] = useState<string>(content)
   const [fileName, setFileName] = useState<string>(() => loadFileName(DEFAULT_FILENAME))
   const [theme, setTheme] = useState<Theme>(() => loadTheme())
   const [showPreview, setShowPreview] = useState(true)
@@ -29,6 +31,9 @@ export default function App() {
   const currentPathRef = useRef<string | undefined>(undefined)
 
   const editorRef = useRef<HTMLTextAreaElement>(null)
+
+  // Ungespeicherte Aenderungen, sobald der Inhalt vom gespeicherten Stand abweicht.
+  const dirty = content !== savedContent
 
   // --- Persistenz & Theme ---------------------------------------------------
   useEffect(() => {
@@ -44,20 +49,33 @@ export default function App() {
     saveTheme(theme)
   }, [theme])
 
+  // Zustand an den Electron-Main-Prozess melden (fuer die Beenden-Nachfrage).
+  useEffect(() => {
+    window.mdECApi?.updateState({
+      dirty,
+      name: fileName,
+      content,
+      path: currentPathRef.current,
+    })
+  }, [content, fileName, dirty])
+
   // --- Toolbar --------------------------------------------------------------
   const handleAction = useCallback((action: ToolbarAction) => {
     const textarea = editorRef.current
     if (!textarea) return
+    // Scrollposition merken, damit die Ansicht nach dem Re-Render nicht springt.
+    const scrollTop = textarea.scrollTop
     const result = applyAction(action, {
       value: textarea.value,
       selectionStart: textarea.selectionStart,
       selectionEnd: textarea.selectionEnd,
     })
     setContent(result.value)
-    // Selektion nach dem Re-Render wiederherstellen.
+    // Selektion und Scrollposition nach dem Re-Render wiederherstellen.
     requestAnimationFrame(() => {
       textarea.focus()
       textarea.setSelectionRange(result.selectionStart, result.selectionEnd)
+      textarea.scrollTop = scrollTop
     })
   }, [])
 
@@ -92,6 +110,7 @@ export default function App() {
     const file = await api.openFile()
     if (!file) return
     setContent(file.content)
+    setSavedContent(file.content)
     setFileName(file.name)
     currentPathRef.current = file.path
   }, [])
@@ -103,6 +122,7 @@ export default function App() {
     if (!result.canceled && result.path) {
       currentPathRef.current = result.path
       if (result.name) setFileName(result.name)
+      setSavedContent(content)
     }
   }, [content, fileName])
 
@@ -113,6 +133,7 @@ export default function App() {
     if (!result.canceled && result.path) {
       currentPathRef.current = result.path
       if (result.name) setFileName(result.name)
+      setSavedContent(content)
     }
   }, [content, fileName])
 
@@ -170,6 +191,7 @@ export default function App() {
 
     api.onOpenFile((file) => {
       setContent(file.content)
+      setSavedContent(file.content)
       setFileName(file.name)
       currentPathRef.current = file.path
     })

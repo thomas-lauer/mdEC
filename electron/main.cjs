@@ -13,6 +13,10 @@ const GITHUB_URL = 'https://github.com/thomas-lauer/mdEC'
 let mainWindow = null
 // Beim Start uebergebener Dateipfad (EXE-Argument), bis der Renderer bereit ist.
 let pendingFilePath = filePathFromArgv(process.argv)
+// Letzter vom Renderer gemeldeter Zustand (fuer die Beenden-Nachfrage).
+let lastState = { dirty: false, name: 'dokument.md', content: '', path: undefined }
+// Verhindert eine erneute Nachfrage, wenn wir das Fenster bewusst schliessen.
+let allowClose = false
 
 function filePathFromArgv(argv) {
   // Erstes Argument, das wie eine Markdown-Datei aussieht.
@@ -21,6 +25,7 @@ function filePathFromArgv(argv) {
 }
 
 function createWindow() {
+  allowClose = false
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -55,9 +60,57 @@ function createWindow() {
     void mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'))
   }
 
+  // Bei ungespeicherten Aenderungen vor dem Schliessen nachfragen.
+  mainWindow.on('close', (event) => {
+    if (allowClose || !lastState.dirty) return
+    event.preventDefault()
+    void promptSaveOnClose()
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+}
+
+async function promptSaveOnClose() {
+  if (!mainWindow) return
+  const choice = dialog.showMessageBoxSync(mainWindow, {
+    type: 'warning',
+    noLink: true,
+    buttons: ['Speichern', 'Nicht speichern', 'Abbrechen'],
+    defaultId: 0,
+    cancelId: 2,
+    title: 'Ungespeicherte Aenderungen',
+    message: `Moechten Sie die Aenderungen an "${lastState.name || 'Dokument'}" speichern?`,
+    detail: 'Wenn Sie nicht speichern, gehen die Aenderungen verloren.',
+  })
+
+  if (choice === 2) return // Abbrechen -> Fenster bleibt offen
+  if (choice === 1) {
+    // Nicht speichern -> schliessen erzwingen
+    allowClose = true
+    mainWindow.close()
+    return
+  }
+
+  // Speichern
+  try {
+    let target = lastState.path
+    if (!target) {
+      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+        title: 'Speichern unter',
+        defaultPath: lastState.name || 'dokument.md',
+        filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
+      })
+      if (canceled || !filePath) return // Speichern abgebrochen -> Fenster bleibt offen
+      target = filePath
+    }
+    await fs.writeFile(target, lastState.content ?? '', 'utf-8')
+    allowClose = true
+    mainWindow.close()
+  } catch (err) {
+    dialog.showErrorBox('Speichern fehlgeschlagen', String(err))
+  }
 }
 
 async function deliverPendingFile() {
@@ -128,7 +181,11 @@ function buildMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
 
-// --- IPC: Dateioperationen --------------------------------------------------
+// --- IPC: Zustand & Dateioperationen ----------------------------------------
+ipcMain.on('mdec:update-state', (_event, state) => {
+  if (state && typeof state === 'object') lastState = state
+})
+
 ipcMain.handle('mdec:open-file', async () => {
   if (!mainWindow) return null
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
