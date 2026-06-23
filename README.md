@@ -6,6 +6,7 @@ mdEC ist ein deutschsprachiger, rein clientseitiger Markdown Editor als Web Appl
 
 - Live-Vorschau für GitHub-Flavored Markdown
 - Vorschau kann ein- und ausgeblendet werden
+- Synchron mitlaufende Vorschau beim Scrollen im Editor
 - Symbolleiste für schnelle Markdown-Formatierungen
 - Upload von `.md` und `.markdown` Dateien
 - Download des aktuellen Inhalts als Markdown-Datei
@@ -54,6 +55,8 @@ mdEC.exe "C:\Pfad\zur\datei.md"
 ```
 
 Die Datei wird beim Start geöffnet. `Speichern` schreibt danach wieder an denselben Pfad.
+
+Werden beim Beenden noch ungespeicherte Änderungen erkannt, fragt die Desktop-App nach, ob die Datei gespeichert werden soll. Der Dialog bietet `Speichern`, `Nicht speichern` und `Abbrechen`. Beim Speichern ohne bekannten Pfad öffnet sich automatisch der „Speichern unter“-Dialog.
 
 ```bash
 npm run electron:dev

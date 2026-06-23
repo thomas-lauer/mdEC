@@ -26,6 +26,9 @@
 - Der Electron-Build nutzt `MDEC_ELECTRON=1`, damit Vite einen relativen `base` (`./`) statt `/mdEC/` setzt. So laedt die App auch aus dem Dateisystem (`file://`) korrekt; der Web-Build bleibt bei `/mdEC/` fuer GitHub Pages.
 - PDF und DOCX werden im Renderer aus dem bereits durch DOMPurify bereinigten Vorschau-HTML erzeugt. Das HTML wird per `DOMParser` strukturiert durchlaufen, sodass kein separater, ungesicherter Render-Pfad entsteht.
 - Eine zweite Electron-Instanz mit Datei-Argument wuerde sonst ein zweites Fenster oeffnen. Mit `requestSingleInstanceLock` und `second-instance` wird die Datei stattdessen an das bestehende Fenster durchgereicht.
+- Die Vorschau sprang beim Formatieren und beim Tippen nach oben, weil `dangerouslySetInnerHTML` das innerHTML komplett ersetzt und der Browser dabei `scrollTop` des Containers auf 0 setzt. Loesung: Die Vorschau wird nach jeder Inhaltsaenderung per `useLayoutEffect` wieder an die relative Editor-Scrollposition ausgerichtet; zusaetzlich bleibt bei Toolbar-Aktionen die Editor-Scrollposition erhalten.
+- Das synchrone Scrollen ist bewusst einseitig (Editor steuert die Vorschau). Beidseitiges Sync wuerde leicht Rueckkopplungs-Spruenge erzeugen, weil das programmatische Setzen von `scrollTop` selbst wieder Scroll-Events ausloest.
+- Die Beenden-Nachfrage muss im Main-Prozess entschieden werden, der Renderer hat keinen direkten Dateizugriff. Der Renderer meldet seinen Zustand (`dirty`, Name, Inhalt, Pfad) per IPC (`updateState`); der Main-Prozess faengt das `close`-Event ab, zeigt einen `showMessageBoxSync`-Dialog und schliesst das Fenster erst nach der Entscheidung (mit einem `allowClose`-Flag, um keine Endlosschleife auszuloesen).
 
 ## Entscheidungen
 

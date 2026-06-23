@@ -19,6 +19,7 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 - Markdown-Editor mit grosser Schreibflaeche
 - Live-Vorschau mit GitHub-Flavored Markdown
 - Ausblendbare Vorschau für konzentriertes Schreiben
+- Synchron mitlaufende Vorschau beim Scrollen im Editor
 - Symbolleiste für schnelle Standardformatierungen
 - Upload vorhandener Markdown-Dateien
 - Download des aktuellen Dokuments
@@ -42,9 +43,11 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 
 Die App verarbeitet Dateien ausschließlich im Browser. Upload bedeutet in diesem Kontext nur das lokale Einlesen einer Datei in die Web-App. Export bedeutet das lokale Erzeugen einer Datei aus der gerenderten, bereinigten Vorschau. Es werden keine Inhalte an einen Server gesendet.
 
-In der Electron-Variante laufen Dateioperationen ueber den Main-Prozess. Der Renderer erhaelt nur die eng begrenzte Preload-API `mdECApi` fuer `openFile`, `saveFile`, `saveFileAs`, Startdateien und Menue-Kommandos. Die Exportfunktionen bleiben Renderer-seitig und werden nur per Menue-Kommandos ausgeloest. `nodeIntegration` bleibt deaktiviert und `contextIsolation` bleibt aktiviert.
+In der Electron-Variante laufen Dateioperationen ueber den Main-Prozess. Der Renderer erhaelt nur die eng begrenzte Preload-API `mdECApi` fuer `openFile`, `saveFile`, `saveFileAs`, `updateState`, Startdateien und Menue-Kommandos. Die Exportfunktionen bleiben Renderer-seitig und werden nur per Menue-Kommandos ausgeloest. `nodeIntegration` bleibt deaktiviert und `contextIsolation` bleibt aktiviert.
 
 Beim Start kann der EXE eine `.md`- oder `.markdown`-Datei als Argument uebergeben werden. Der Main-Prozess liest diese Datei ein, uebergibt Inhalt und Pfad an den Renderer und nutzt denselben Pfad spaeter fuer `Speichern`.
+
+Beim Beenden fragt die Desktop-App bei ungespeicherten Aenderungen nach, ob die Datei gespeichert werden soll. Dafuer meldet der Renderer seinen Zustand (`dirty`, Dateiname, Inhalt, Pfad) per `updateState` an den Main-Prozess. Dieser faengt das `close`-Event des Fensters ab und zeigt einen Dialog mit `Speichern`, `Nicht speichern` und `Abbrechen`; beim Speichern ohne bekannten Pfad oeffnet sich der `Speichern unter`-Dialog.
 
 Die App-Version wird als numerische Hauptversion gefuehrt. Version 2 ist der Startpunkt fuer diese Versionierung. Bei normalen Pushes auf `main` erhoeht `.github/workflows/version.yml` die Hauptversion automatisch um `+1`; Commits mit `[skip version]` sind ausgenommen.
 
@@ -56,4 +59,3 @@ Die Oberfläche ist arbeitsorientiert, dicht und ruhig. Die wichtigsten Aktionen
 
 - Drag-and-drop Upload
 - Such- und Ersetzen-Funktion
-- Synchronisierte Scrollposition zwischen Editor und Vorschau
