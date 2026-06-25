@@ -19,7 +19,7 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 - Markdown-Editor mit grosser Schreibflaeche
 - Live-Vorschau mit GitHub-Flavored Markdown
 - Einzelansicht: zeigt im selben Fenster entweder die Vorschau (Standard) oder den Markdown-Code
-- Klick in die Vorschau wechselt zum Markdown-Code und setzt den Cursor an der passenden Quell-Stelle
+- Klick in die Vorschau wechselt zum Markdown-Code und setzt den Cursor an der passenden Quell-Stelle (bis hin zu einzelnen Listenpunkten und Tabellenzeilen)
 - Rechtsklick im Markdown-Code wechselt zurück zur Vorschau; nach dem Speichern erscheint wieder die Vorschau
 - Symbolleiste für schnelle Standardformatierungen
 - Upload vorhandener Markdown-Dateien
