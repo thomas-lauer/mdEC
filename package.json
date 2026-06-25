@@ -1,7 +1,7 @@
 {
   "name": "mdec",
   "private": true,
-  "version": "7.0.0",
+  "version": "8.0.0",
   "type": "module",
   "description": "mdEC - schlanker Markdown Editor fuer GitHub Pages und Electron",
   "author": "Thomas Lauer <thomas@lauer.io>",
