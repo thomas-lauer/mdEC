@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
-import { renderMarkdown } from '../lib/markdown'
+import { renderMarkdownWithLines } from '../lib/markdown'
 
 interface PreviewProps {
   markdown: string
 }
 
 // Gerenderte, bereinigte Vorschau. Das HTML stammt ausschliesslich aus
-// renderMarkdown und ist damit bereits durch DOMPurify gegangen.
+// renderMarkdownWithLines (DOMPurify-bereinigt) und traegt pro Block die
+// Quell-Zeile (data-source-line) fuer den Sprung in den Editor.
 export default function Preview({ markdown }: PreviewProps) {
-  const html = useMemo(() => renderMarkdown(markdown), [markdown])
+  const html = useMemo(() => renderMarkdownWithLines(markdown), [markdown])
   return (
     <div
       className="preview markdown-body"

@@ -170,6 +170,8 @@ export default function App() {
   const toggleTheme = useCallback(() => setTheme((t) => (t === 'dark' ? 'light' : 'dark')), [])
   // In den Markdown-Code wechseln (Klick in die Vorschau).
   const showEditor = useCallback(() => setMode('edit'), [])
+  // Zur Vorschau wechseln (Rechtsklick im Editor).
+  const showPreview = useCallback(() => setMode('preview'), [])
   // Augen-Button: zwischen Vorschau und Code umschalten.
   const toggleMode = useCallback(() => setMode((m) => (m === 'edit' ? 'preview' : 'edit')), [])
 
@@ -261,6 +263,7 @@ export default function App() {
         onChange={setContent}
         onAction={handleAction}
         onEditRequest={showEditor}
+        onPreviewRequest={showPreview}
       />
     </div>
   )

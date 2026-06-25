@@ -19,7 +19,8 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 - Markdown-Editor mit grosser Schreibflaeche
 - Live-Vorschau mit GitHub-Flavored Markdown
 - Einzelansicht: zeigt im selben Fenster entweder die Vorschau (Standard) oder den Markdown-Code
-- Klick in die Vorschau wechselt zum Markdown-Code; nach dem Speichern erscheint wieder die Vorschau
+- Klick in die Vorschau wechselt zum Markdown-Code und setzt den Cursor an der passenden Quell-Stelle
+- Rechtsklick im Markdown-Code wechselt zurück zur Vorschau; nach dem Speichern erscheint wieder die Vorschau
 - Symbolleiste für schnelle Standardformatierungen
 - Upload vorhandener Markdown-Dateien
 - Download des aktuellen Dokuments
@@ -53,7 +54,7 @@ Die App-Version wird als numerische Hauptversion gefuehrt. Version 2 ist der Sta
 
 ## Design
 
-Die Oberfläche ist arbeitsorientiert, dicht und ruhig. Die wichtigsten Aktionen liegen in der Kopfzeile: Datei hochladen, speichern oder herunterladen, Export, Beispiel zurücksetzen, Ansicht umschalten, Theme wechseln und GitHub öffnen. Es ist immer nur eine Ansicht sichtbar: die gerenderte Vorschau als ruhige Standardansicht oder der Markdown-Code mit der Formatierungs-Symbolleiste direkt über der Schreibfläche. Der Wechsel erfolgt per Klick in die Vorschau, über den Augen-/Stift-Button in der Kopfzeile oder automatisch nach dem Speichern.
+Die Oberfläche ist arbeitsorientiert, dicht und ruhig. Die wichtigsten Aktionen liegen in der Kopfzeile: Datei hochladen, speichern oder herunterladen, Export, Beispiel zurücksetzen, Ansicht umschalten, Theme wechseln und GitHub öffnen. Es ist immer nur eine Ansicht sichtbar: die gerenderte Vorschau als ruhige Standardansicht oder der Markdown-Code mit der Formatierungs-Symbolleiste direkt über der Schreibfläche. Der Wechsel erfolgt per Klick in die Vorschau (der Cursor landet an der zugehörigen Quell-Stelle), per Rechtsklick im Markdown-Code (zurück zur Vorschau), über den Augen-/Stift-Button in der Kopfzeile oder automatisch nach dem Speichern.
 
 ## Erweiterungsideen
 
