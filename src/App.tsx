@@ -26,7 +26,9 @@ export default function App() {
   const [savedContent, setSavedContent] = useState<string>(content)
   const [fileName, setFileName] = useState<string>(() => loadFileName(DEFAULT_FILENAME))
   const [theme, setTheme] = useState<Theme>(() => loadTheme())
-  const [showPreview, setShowPreview] = useState(true)
+  // Einzelansicht: entweder die Vorschau ('preview', Standard) oder der
+  // Markdown-Code ('edit'). Es ist immer nur eine der beiden sichtbar.
+  const [mode, setMode] = useState<'edit' | 'preview'>('preview')
   // Aktueller Dateipfad im Desktop-Modus (fuer "Speichern").
   const currentPathRef = useRef<string | undefined>(undefined)
 
@@ -101,6 +103,7 @@ export default function App() {
     const name = /\.(md|markdown)$/i.test(fileName) ? fileName : `${fileName || 'dokument'}.md`
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
     downloadBlob(blob, name)
+    setMode('preview')
   }, [content, fileName])
 
   // --- Datei-Aktionen (Desktop) --------------------------------------------
@@ -123,6 +126,7 @@ export default function App() {
       currentPathRef.current = result.path
       if (result.name) setFileName(result.name)
       setSavedContent(content)
+      setMode('preview')
     }
   }, [content, fileName])
 
@@ -134,6 +138,7 @@ export default function App() {
       currentPathRef.current = result.path
       if (result.name) setFileName(result.name)
       setSavedContent(content)
+      setMode('preview')
     }
   }, [content, fileName])
 
@@ -163,7 +168,10 @@ export default function App() {
   )
 
   const toggleTheme = useCallback(() => setTheme((t) => (t === 'dark' ? 'light' : 'dark')), [])
-  const togglePreview = useCallback(() => setShowPreview((v) => !v), [])
+  // In den Markdown-Code wechseln (Klick in die Vorschau).
+  const showEditor = useCallback(() => setMode('edit'), [])
+  // Augen-Button: zwischen Vorschau und Code umschalten.
+  const toggleMode = useCallback(() => setMode((m) => (m === 'edit' ? 'preview' : 'edit')), [])
 
   // --- Electron-Verdrahtung -------------------------------------------------
   // Refs auf die aktuellen Handler, damit der einmalige Listener stets die
@@ -173,7 +181,7 @@ export default function App() {
     handleSave,
     handleSaveAs,
     handleExport,
-    togglePreview,
+    toggleMode,
     handleResetSample,
   })
   handlersRef.current = {
@@ -181,7 +189,7 @@ export default function App() {
     handleSave,
     handleSaveAs,
     handleExport,
-    togglePreview,
+    toggleMode,
     handleResetSample,
   }
 
@@ -218,7 +226,7 @@ export default function App() {
           void h.handleExport('docx')
           break
         case 'toggle-preview':
-          h.togglePreview()
+          h.toggleMode()
           break
         case 'reset-sample':
           h.handleResetSample()
@@ -234,9 +242,9 @@ export default function App() {
         onFileNameChange={setFileName}
         isDesktop={isDesktop}
         theme={theme}
-        showPreview={showPreview}
+        mode={mode}
         onToggleTheme={toggleTheme}
-        onTogglePreview={togglePreview}
+        onToggleMode={toggleMode}
         onResetSample={handleResetSample}
         onExport={handleExport}
         onUpload={handleUpload}
@@ -249,9 +257,10 @@ export default function App() {
       <Workspace
         ref={editorRef}
         content={content}
-        showPreview={showPreview}
+        mode={mode}
         onChange={setContent}
         onAction={handleAction}
+        onEditRequest={showEditor}
       />
     </div>
   )

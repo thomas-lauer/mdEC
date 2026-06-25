@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useLayoutEffect, useRef } from 'react'
+import { forwardRef, useEffect } from 'react'
 import Toolbar from './Toolbar'
 import Editor from './Editor'
 import Preview from './Preview'
@@ -6,50 +6,41 @@ import type { ToolbarAction } from '../lib/toolbar'
 
 interface WorkspaceProps {
   content: string
-  showPreview: boolean
+  mode: 'edit' | 'preview'
   onChange: (value: string) => void
   onAction: (action: ToolbarAction) => void
+  onEditRequest: () => void
 }
 
-// Zweigeteilte Arbeitsflaeche: links Editor (mit Symbolleiste), rechts die
-// Vorschau. Ist die Vorschau ausgeblendet, nutzt der Editor die volle Breite.
+// Einzelansicht: im selben Fenster wird entweder die Vorschau oder der
+// Markdown-Code angezeigt. Ein Klick in die Vorschau wechselt in den Editor.
 const Workspace = forwardRef<HTMLTextAreaElement, WorkspaceProps>(function Workspace(
-  { content, showPreview, onChange, onAction },
+  { content, mode, onChange, onAction, onEditRequest },
   ref,
 ) {
-  const previewBodyRef = useRef<HTMLDivElement>(null)
-
-  // Vorschau anhand der relativen Editor-Scrollposition mitfuehren.
-  const syncPreview = useCallback(() => {
-    const editor = ref && typeof ref !== 'function' ? ref.current : null
-    const preview = previewBodyRef.current
-    if (!editor || !preview) return
-    const editorMax = editor.scrollHeight - editor.clientHeight
-    if (editorMax <= 0) {
-      preview.scrollTop = 0
-      return
+  // Beim Wechsel in den Bearbeiten-Modus den Editor fokussieren.
+  useEffect(() => {
+    if (mode === 'edit' && ref && typeof ref !== 'function') {
+      ref.current?.focus()
     }
-    const previewMax = preview.scrollHeight - preview.clientHeight
-    preview.scrollTop = (editor.scrollTop / editorMax) * previewMax
-  }, [ref])
-
-  // Nach jeder Inhaltsaenderung neu ausrichten. Sonst springt die Vorschau
-  // durch das Neu-Rendern (innerHTML wird ersetzt) nach oben.
-  useLayoutEffect(() => {
-    if (showPreview) syncPreview()
-  }, [content, showPreview, syncPreview])
+  }, [mode, ref])
 
   return (
-    <main className={`workspace ${showPreview ? 'with-preview' : 'editor-only'}`}>
-      <section className="pane editor-pane">
-        <Toolbar onAction={onAction} />
-        <div className="pane-body">
-          <Editor ref={ref} value={content} onChange={onChange} onScroll={syncPreview} />
-        </div>
-      </section>
-      {showPreview && (
+    <main className="workspace">
+      {mode === 'edit' ? (
+        <section className="pane editor-pane">
+          <Toolbar onAction={onAction} />
+          <div className="pane-body">
+            <Editor ref={ref} value={content} onChange={onChange} />
+          </div>
+        </section>
+      ) : (
         <section className="pane preview-pane">
-          <div className="pane-body" ref={previewBodyRef}>
+          <div
+            className="pane-body preview-clickable"
+            onClick={onEditRequest}
+            title="Zum Bearbeiten klicken"
+          >
             <Preview markdown={content} />
           </div>
         </section>

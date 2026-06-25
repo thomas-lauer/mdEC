@@ -36,3 +36,5 @@
 - Die App ist komplett clientseitig. Es gibt kein Backend und keine serverseitige Speicherung.
 - Browserdaten werden nur lokal per `localStorage` gesichert.
 - Exportdateien werden aus der bereinigten Markdown-Vorschau erzeugt. HTML bewahrt das Vorschau-Layout, PDF erzeugt ein A4-Dokument, DOCX nutzt native Word-Strukturen.
+- Die fruehere Seite-an-Seite-Ansicht wurde durch eine Einzelansicht ersetzt: im selben Fenster ist entweder die Vorschau (Standard) oder der Markdown-Code sichtbar. Ein `mode`-State (`'edit' | 'preview'`) steuert die Ansicht; Klick in die Vorschau wechselt zum Code, der Augen-/Stift-Button schaltet um, und nach dem Speichern/Herunterladen erscheint wieder die Vorschau.
+- Mit der Einzelansicht entfaellt das synchrone Mitscrollen, da Editor und Vorschau nie gleichzeitig sichtbar sind. Der Scroll-Erhalt bei Toolbar-Aktionen bleibt fuer den Editor-Modus erhalten.

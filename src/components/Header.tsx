@@ -9,8 +9,8 @@ import {
   RotateCcw,
   Sun,
   Moon,
-  PanelRightClose,
-  PanelRightOpen,
+  Eye,
+  Pencil,
   Github,
   ChevronDown,
 } from 'lucide-react'
@@ -22,9 +22,9 @@ interface HeaderProps {
   onFileNameChange: (name: string) => void
   isDesktop: boolean
   theme: Theme
-  showPreview: boolean
+  mode: 'edit' | 'preview'
   onToggleTheme: () => void
-  onTogglePreview: () => void
+  onToggleMode: () => void
   onResetSample: () => void
   onExport: (format: ExportFormat) => void
   // Web-Modus
@@ -45,9 +45,9 @@ export default function Header(props: HeaderProps) {
     onFileNameChange,
     isDesktop,
     theme,
-    showPreview,
+    mode,
     onToggleTheme,
-    onTogglePreview,
+    onToggleMode,
     onResetSample,
     onExport,
     onUpload,
@@ -159,11 +159,11 @@ export default function Header(props: HeaderProps) {
         <button
           className="btn btn-icon"
           type="button"
-          onClick={onTogglePreview}
-          title={showPreview ? 'Vorschau ausblenden' : 'Vorschau einblenden'}
-          aria-pressed={showPreview}
+          onClick={onToggleMode}
+          title={mode === 'edit' ? 'Vorschau anzeigen' : 'Markdown bearbeiten'}
+          aria-pressed={mode === 'preview'}
         >
-          {showPreview ? <PanelRightClose size={16} aria-hidden /> : <PanelRightOpen size={16} aria-hidden />}
+          {mode === 'edit' ? <Eye size={16} aria-hidden /> : <Pencil size={16} aria-hidden />}
         </button>
 
         <button

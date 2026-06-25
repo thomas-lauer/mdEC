@@ -4,9 +4,10 @@ mdEC ist ein deutschsprachiger, rein clientseitiger Markdown Editor als Web Appl
 
 ## Funktionen
 
+- Einzelansicht: zeigt entweder die Vorschau oder den Markdown-Code im selben Fenster
+- Vorschau als Standardansicht; Klick in die Vorschau wechselt zum Markdown-Code
+- Augen-/Stift-Button zum Umschalten; nach dem Speichern erscheint wieder die Vorschau
 - Live-Vorschau für GitHub-Flavored Markdown
-- Vorschau kann ein- und ausgeblendet werden
-- Synchron mitlaufende Vorschau beim Scrollen im Editor
 - Symbolleiste für schnelle Markdown-Formatierungen
 - Upload von `.md` und `.markdown` Dateien
 - Download des aktuellen Inhalts als Markdown-Datei

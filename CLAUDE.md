@@ -6,7 +6,7 @@ mdEC ist ein schlanker Markdown Editor, der direkt über GitHub Pages läuft. Nu
 
 ## Produktidee
 
-Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfzeile, ein Arbeitsbereich mit Schreibfläche und Vorschau sowie eine schnell erreichbare Option, den rechten Bereich auszublenden. Für mdEC steht nicht Multi-Platform-Posting im Mittelpunkt, sondern das schnelle Bearbeiten von Markdown-Dokumenten.
+Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfzeile und ein einzelner, ruhiger Arbeitsbereich. Statt Editor und Vorschau gleichzeitig zu zeigen, blendet mdEC im selben Fenster genau eine Ansicht ein: standardmäßig die gerenderte Vorschau, auf Klick den Markdown-Code. Für mdEC steht nicht Multi-Platform-Posting im Mittelpunkt, sondern das schnelle Bearbeiten von Markdown-Dokumenten.
 
 ## Zielgruppe
 
@@ -18,8 +18,8 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 
 - Markdown-Editor mit grosser Schreibflaeche
 - Live-Vorschau mit GitHub-Flavored Markdown
-- Ausblendbare Vorschau für konzentriertes Schreiben
-- Synchron mitlaufende Vorschau beim Scrollen im Editor
+- Einzelansicht: zeigt im selben Fenster entweder die Vorschau (Standard) oder den Markdown-Code
+- Klick in die Vorschau wechselt zum Markdown-Code; nach dem Speichern erscheint wieder die Vorschau
 - Symbolleiste für schnelle Standardformatierungen
 - Upload vorhandener Markdown-Dateien
 - Download des aktuellen Dokuments
@@ -53,7 +53,7 @@ Die App-Version wird als numerische Hauptversion gefuehrt. Version 2 ist der Sta
 
 ## Design
 
-Die Oberfläche ist arbeitsorientiert, dicht und ruhig. Die wichtigsten Aktionen liegen in der Kopfzeile: Datei hochladen, speichern oder herunterladen, Export, Beispiel zurücksetzen, Theme wechseln und GitHub öffnen. Direkt über der Schreibfläche liegt eine Symbolleiste für häufige Markdown-Formatierungen. Der Editor und die Vorschau sind als gleichwertige Arbeitsbereiche ausgelegt. Auf kleinen Bildschirmen stapeln sich die Bereiche.
+Die Oberfläche ist arbeitsorientiert, dicht und ruhig. Die wichtigsten Aktionen liegen in der Kopfzeile: Datei hochladen, speichern oder herunterladen, Export, Beispiel zurücksetzen, Ansicht umschalten, Theme wechseln und GitHub öffnen. Es ist immer nur eine Ansicht sichtbar: die gerenderte Vorschau als ruhige Standardansicht oder der Markdown-Code mit der Formatierungs-Symbolleiste direkt über der Schreibfläche. Der Wechsel erfolgt per Klick in die Vorschau, über den Augen-/Stift-Button in der Kopfzeile oder automatisch nach dem Speichern.
 
 ## Erweiterungsideen
 
