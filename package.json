@@ -43,6 +43,11 @@
       "output": "release"
     },
     "electronDist": "node_modules/electron/dist",
+    "publish": {
+      "provider": "github",
+      "owner": "thomas-lauer",
+      "repo": "mdEC"
+    },
     "files": [
       "dist/**/*",
       "electron/**/*"

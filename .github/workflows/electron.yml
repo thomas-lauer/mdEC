@@ -1,0 +1,49 @@
+name: Build Electron (Windows)
+
+on:
+  # Bei einem Versions-Tag wie v7.0.0 wird ein Release gebaut.
+  push:
+    tags: ['v*']
+  # Manueller Start ueber die Actions-Oberflaeche.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Renderer bauen
+        run: npm run electron:build
+
+      - name: Installer bauen und ggf. veroeffentlichen
+        # Bei einem Tag wird der Release veroeffentlicht, sonst nur gebaut.
+        run: npx electron-builder --publish ${{ startsWith(github.ref, 'refs/tags/') && 'always' || 'never' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Artefakte hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdEC-windows
+          path: |
+            release/*.exe
+            release/*.blockmap
+            release/latest.yml
+          if-no-files-found: error

@@ -39,6 +39,7 @@ Die App übernimmt das fokussierte Editor-Prinzip von Polypost: eine klare Kopfz
 - Desktop: Electron mit isoliertem Preload-Skript und IPC fuer Dateioperationen
 - Deployment: GitHub Actions mit `actions/deploy-pages`
 - Hosting: GitHub Pages unter `/mdEC/`
+- Desktop-Release: GitHub Actions baut die Windows-Installer (NSIS-Setup und Portable) ueber `electron-builder` und veroeffentlicht sie bei einem Versions-Tag `v*` als GitHub-Release (`.github/workflows/electron.yml`)
 
 ## Datenschutz
 
