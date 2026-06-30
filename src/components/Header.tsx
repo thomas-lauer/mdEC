@@ -19,6 +19,7 @@ import type { ExportFormat, Theme } from '../types'
 
 interface HeaderProps {
   fileName: string
+  filePath?: string
   onFileNameChange: (name: string) => void
   isDesktop: boolean
   theme: Theme
@@ -42,6 +43,7 @@ const GITHUB_URL = 'https://github.com/thomas-lauer/mdEC'
 export default function Header(props: HeaderProps) {
   const {
     fileName,
+    filePath,
     onFileNameChange,
     isDesktop,
     theme,
@@ -61,7 +63,7 @@ export default function Header(props: HeaderProps) {
   const [exportOpen, setExportOpen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
 
-  // Export-Menue schliessen, wenn ausserhalb geklickt wird.
+  // Export-Menü schließen, wenn außerhalb geklickt wird.
   useEffect(() => {
     if (!exportOpen) return
     const onDocClick = (e: MouseEvent) => {
@@ -88,9 +90,10 @@ export default function Header(props: HeaderProps) {
         <span className="header-logo">mdEC</span>
         <input
           className="filename-input"
-          value={fileName}
+          value={filePath ?? fileName}
           onChange={(e) => onFileNameChange(e.target.value)}
           spellCheck={false}
+          title={filePath ?? fileName}
           aria-label="Dateiname"
         />
       </div>
@@ -98,9 +101,9 @@ export default function Header(props: HeaderProps) {
       <div className="header-actions">
         {isDesktop ? (
           <>
-            <button className="btn" type="button" onClick={onOpen} title="Oeffnen (Strg+O)">
+            <button className="btn" type="button" onClick={onOpen} title="Öffnen (Strg+O)">
               <FolderOpen size={16} aria-hidden />
-              <span>Oeffnen</span>
+              <span>Öffnen</span>
             </button>
             <button className="btn" type="button" onClick={onSave} title="Speichern (Strg+S)">
               <Save size={16} aria-hidden />
@@ -152,7 +155,7 @@ export default function Header(props: HeaderProps) {
           )}
         </div>
 
-        <button className="btn btn-icon" type="button" onClick={onResetSample} title="Beispiel zuruecksetzen">
+        <button className="btn btn-icon" type="button" onClick={onResetSample} title="Beispiel zurücksetzen">
           <RotateCcw size={16} aria-hidden />
         </button>
 
@@ -175,7 +178,7 @@ export default function Header(props: HeaderProps) {
           {theme === 'dark' ? <Sun size={16} aria-hidden /> : <Moon size={16} aria-hidden />}
         </button>
 
-        <button className="btn btn-icon" type="button" onClick={openGithub} title="GitHub oeffnen">
+        <button className="btn btn-icon" type="button" onClick={openGithub} title="GitHub öffnen">
           <Github size={16} aria-hidden />
         </button>
       </div>

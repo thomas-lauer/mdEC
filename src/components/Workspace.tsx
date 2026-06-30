@@ -17,7 +17,7 @@ interface WorkspaceProps {
 // Einzelansicht: im selben Fenster wird entweder die Vorschau oder der
 // Markdown-Code angezeigt.
 // - Klick in die Vorschau wechselt in den Editor und springt zur Quell-Zeile.
-// - Rechtsklick im Editor wechselt zurueck zur Vorschau.
+// - Rechtsklick im Editor wechselt zurück zur Vorschau.
 const Workspace = forwardRef<HTMLTextAreaElement, WorkspaceProps>(function Workspace(
   { content, mode, onChange, onAction, onEditRequest, onPreviewRequest },
   ref,
@@ -25,7 +25,7 @@ const Workspace = forwardRef<HTMLTextAreaElement, WorkspaceProps>(function Works
   // Zeile, zu der nach dem Wechsel in den Editor gesprungen werden soll.
   const pendingLineRef = useRef<number | null>(null)
 
-  // Klick in der Vorschau: naechstes Element mit Quell-Zeile suchen, merken
+  // Klick in der Vorschau: nächstes Element mit Quell-Zeile suchen, merken
   // und in den Editor wechseln.
   const handlePreviewClick = (event: MouseEvent<HTMLDivElement>) => {
     event.preventDefault()

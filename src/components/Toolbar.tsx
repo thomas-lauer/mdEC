@@ -41,14 +41,14 @@ const GROUPS: ToolGroup[] = [
   },
   {
     items: [
-      { action: 'h1', label: 'Ueberschrift 1', Icon: Heading1 },
-      { action: 'h2', label: 'Ueberschrift 2', Icon: Heading2 },
-      { action: 'h3', label: 'Ueberschrift 3', Icon: Heading3 },
+      { action: 'h1', label: 'Überschrift 1', Icon: Heading1 },
+      { action: 'h2', label: 'Überschrift 2', Icon: Heading2 },
+      { action: 'h3', label: 'Überschrift 3', Icon: Heading3 },
     ],
   },
   {
     items: [
-      { action: 'ul', label: 'Aufzaehlung', Icon: List },
+      { action: 'ul', label: 'Aufzählung', Icon: List },
       { action: 'ol', label: 'Nummerierte Liste', Icon: ListOrdered },
       { action: 'quote', label: 'Zitat', Icon: Quote },
     ],
@@ -63,8 +63,8 @@ const GROUPS: ToolGroup[] = [
   },
 ]
 
-// Symbolleiste fuer haeufige Markdown-Formatierungen direkt ueber der
-// Schreibflaeche.
+// Symbolleiste für häufige Markdown-Formatierungen direkt über der
+// Schreibfläche.
 export default function Toolbar({ onAction }: ToolbarProps) {
   return (
     <div className="toolbar" role="toolbar" aria-label="Formatierungen">

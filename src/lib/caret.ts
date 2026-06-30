@@ -6,12 +6,12 @@ export function lineStartIndex(text: string, line: number): number {
   const parts = text.split('\n')
   let index = 0
   for (let i = 0; i < line && i < parts.length; i++) {
-    index += parts[i].length + 1 // +1 fuer das Zeilenumbruch-Zeichen
+    index += parts[i].length + 1 // +1 für das Zeilenumbruch-Zeichen
   }
   return Math.min(index, text.length)
 }
 
-// Stil-Eigenschaften, die das Umbruchverhalten und damit die Hoehe bestimmen.
+// Stil-Eigenschaften, die das Umbruchverhalten und damit die Höhe bestimmen.
 const MIRROR_STYLE_PROPS = [
   'boxSizing',
   'paddingTop',
@@ -35,7 +35,7 @@ const MIRROR_STYLE_PROPS = [
 
 /**
  * Vertikaler Pixel-Offset des Zeichens an `index` innerhalb der Textarea.
- * Misst ueber ein unsichtbares Spiegel-Element mit identischem Umbruch.
+ * Misst über ein unsichtbares Spiegel-Element mit identischem Umbruch.
  */
 function caretTop(textarea: HTMLTextAreaElement, index: number): number {
   const cs = getComputedStyle(textarea)
@@ -65,7 +65,7 @@ function caretTop(textarea: HTMLTextAreaElement, index: number): number {
   return top
 }
 
-/** Scrollt die Textarea so, dass die Position grob ins obere Drittel rueckt. */
+/** Scrollt die Textarea so, dass die Position grob ins obere Drittel rückt. */
 export function scrollTextareaToIndex(textarea: HTMLTextAreaElement, index: number): void {
   const top = caretTop(textarea, index)
   const target = top - textarea.clientHeight / 3

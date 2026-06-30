@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
    mdEC – globales Layout und Theming.
-   Light/Dark ueber [data-theme] am <html>-Element.
-   Hoehen sind bewusst echt begrenzt (minmax(0, 1fr)), damit Editor und Vorschau
+   Light/Dark über [data-theme] am <html>-Element.
+   Höhen sind bewusst echt begrenzt (minmax(0, 1fr)), damit Editor und Vorschau
    intern scrollen statt die Seite zu sprengen (siehe lern.md).
 ---------------------------------------------------------------------------- */
 
@@ -56,7 +56,7 @@ body {
   color: var(--text);
 }
 
-/* --- App-Shell: Kopfzeile + Arbeitsflaeche, voll begrenzte Hoehe --------- */
+/* --- App-Shell: Kopfzeile + Arbeitsfläche, voll begrenzte Höhe --------- */
 .app-shell {
   height: 100%;
   display: grid;
@@ -79,6 +79,9 @@ body {
   align-items: center;
   gap: 10px;
   min-width: 0;
+  /* Nimmt den freien Platz bis zu den Aktionen ein, damit das Dateinamen-Feld
+     breit werden kann. */
+  flex: 1;
 }
 
 .header-logo {
@@ -94,7 +97,9 @@ body {
   padding: 5px 9px;
   font-size: 13px;
   color: var(--text);
-  max-width: 240px;
+  /* Füllt den verfügbaren Platz bis zu den Aktionen (zeigt den vollen Pfad). */
+  flex: 1;
+  min-width: 0;
 }
 
 .filename-input:focus {
@@ -137,7 +142,7 @@ body {
   padding: 6px;
 }
 
-/* --- Export-Menue -------------------------------------------------------- */
+/* --- Export-Menü -------------------------------------------------------- */
 .export-wrap {
   position: relative;
 }
@@ -176,7 +181,7 @@ body {
   background: var(--btn-bg-hover);
 }
 
-/* --- Arbeitsflaeche ------------------------------------------------------ */
+/* --- Arbeitsfläche ------------------------------------------------------ */
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -356,10 +361,6 @@ body {
 
 /* --- Responsiv: kompaktere Kopfzeile auf kleinen Bildschirmen ------------- */
 @media (max-width: 820px) {
-  .filename-input {
-    max-width: 130px;
-  }
-
   .btn span {
     display: none;
   }

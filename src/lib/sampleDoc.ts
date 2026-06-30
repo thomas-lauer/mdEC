@@ -1,14 +1,14 @@
-// Beispiel-Dokument fuer den ersten Start und "Beispiel zuruecksetzen".
+// Beispiel-Dokument für den ersten Start und "Beispiel zurücksetzen".
 export const SAMPLE_DOC = `# Willkommen bei mdEC
 
 **mdEC** ist ein schlanker Markdown-Editor mit Live-Vorschau. Schreibe links,
-sieh das Ergebnis rechts. Die Vorschau laesst sich fuer konzentriertes
+sieh das Ergebnis rechts. Die Vorschau lässt sich für konzentriertes
 Schreiben ausblenden.
 
 ## Funktionen
 
 - Live-Vorschau mit *GitHub-Flavored Markdown*
-- Symbolleiste fuer schnelle Formatierungen
+- Symbolleiste für schnelle Formatierungen
 - Upload und Download von \`.md\`-Dateien
 - Export als HTML, PDF und DOCX
 - Helles und dunkles Design
@@ -26,14 +26,14 @@ function gruss(name: string): string {
 }
 \`\`\`
 
-| Format | Unterstuetzt |
+| Format | Unterstützt |
 | ------ | ------------ |
 | HTML   | ja           |
 | PDF    | ja           |
 | DOCX   | ja           |
 
 1. Schreiben
-2. Vorschau pruefen
+2. Vorschau prüfen
 3. Exportieren
 
 ---

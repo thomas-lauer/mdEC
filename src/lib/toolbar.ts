@@ -1,7 +1,7 @@
-// Reine Funktionen fuer die Editor-Symbolleiste. Sie arbeiten auf dem
+// Reine Funktionen für die Editor-Symbolleiste. Sie arbeiten auf dem
 // Textarea-Wert plus Selektionsbereich und liefern den neuen Wert sowie
-// die neue Selektion zurueck. Dadurch bleibt die Logik testbar und die
-// React-Komponente duenn.
+// die neue Selektion zurück. Dadurch bleibt die Logik testbar und die
+// React-Komponente dünn.
 
 export type ToolbarAction =
   | 'bold'
@@ -30,7 +30,7 @@ const TABLE_TEMPLATE = `| Spalte 1 | Spalte 2 |
 | Zelle    | Zelle    |
 `
 
-/** Umschliesst die Selektion mit Praefix/Suffix (z. B. **fett**). */
+/** Umschließt die Selektion mit Präfix/Suffix (z. B. **fett**). */
 function wrap(state: EditState, prefix: string, suffix: string, placeholder: string): EditState {
   const { value, selectionStart, selectionEnd } = state
   const selected = value.slice(selectionStart, selectionEnd) || placeholder
@@ -44,7 +44,7 @@ function wrap(state: EditState, prefix: string, suffix: string, placeholder: str
   }
 }
 
-/** Setzt vor jede betroffene Zeile ein Praefix (Listen, Zitate, Ueberschriften). */
+/** Setzt vor jede betroffene Zeile ein Präfix (Listen, Zitate, Überschriften). */
 function prefixLines(
   state: EditState,
   makePrefix: (lineIndex: number) => string,
@@ -66,7 +66,7 @@ function prefixLines(
   }
 }
 
-/** Fuegt einen Block am Zeilenanfang ein (Tabelle, Trennlinie, Codeblock). */
+/** Fügt einen Block am Zeilenanfang ein (Tabelle, Trennlinie, Codeblock). */
 function insertBlock(state: EditState, block: string, selectInner?: [number, number]): EditState {
   const { value, selectionStart, selectionEnd } = state
   const lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1
@@ -96,11 +96,11 @@ export function applyAction(action: ToolbarAction, state: EditState): EditState 
     case 'code':
       return wrap(state, '`', '`', 'Code')
     case 'h1':
-      return prefixLines(state, () => '# ', 'Ueberschrift 1')
+      return prefixLines(state, () => '# ', 'Überschrift 1')
     case 'h2':
-      return prefixLines(state, () => '## ', 'Ueberschrift 2')
+      return prefixLines(state, () => '## ', 'Überschrift 2')
     case 'h3':
-      return prefixLines(state, () => '### ', 'Ueberschrift 3')
+      return prefixLines(state, () => '### ', 'Überschrift 3')
     case 'ul':
       return prefixLines(state, () => '- ', 'Listenpunkt')
     case 'ol':

@@ -6,7 +6,7 @@ interface EditorProps {
   onScroll?: () => void
 }
 
-// Schreibflaeche. Die Textarea-Ref wird nach oben gereicht, damit die
+// Schreibfläche. Die Textarea-Ref wird nach oben gereicht, damit die
 // Toolbar Selektion und Cursorposition lesen und setzen kann.
 const Editor = forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   { value, onChange, onScroll },

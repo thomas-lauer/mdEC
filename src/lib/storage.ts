@@ -1,7 +1,7 @@
 import type { Theme } from '../types'
 
-// Lokale Zwischenspeicherung im Browser. Es werden ausschliesslich
-// localStorage-Schluessel genutzt; keine Server-Kommunikation.
+// Lokale Zwischenspeicherung im Browser. Es werden ausschließlich
+// localStorage-Schlüssel genutzt; keine Server-Kommunikation.
 const KEY_CONTENT = 'mdec:content'
 const KEY_FILENAME = 'mdec:filename'
 const KEY_THEME = 'mdec:theme'
@@ -18,7 +18,7 @@ function safeSet(key: string, value: string): void {
   try {
     window.localStorage.setItem(key, value)
   } catch {
-    // localStorage kann blockiert sein (privater Modus o. Ae.) - still ignorieren.
+    // localStorage kann blockiert sein (privater Modus o. Ä.) - still ignorieren.
   }
 }
 
@@ -41,7 +41,7 @@ export function saveFileName(name: string): void {
 export function loadTheme(): Theme {
   const stored = safeGet(KEY_THEME)
   if (stored === 'light' || stored === 'dark') return stored
-  // System-Praeferenz als Default.
+  // System-Präferenz als Default.
   if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark'
   }

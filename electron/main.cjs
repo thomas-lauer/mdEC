@@ -1,5 +1,5 @@
-// Electron-Main-Prozess fuer mdEC.
-// Dateioperationen laufen ausschliesslich hier; der Renderer erhaelt nur die
+// Electron-Main-Prozess für mdEC.
+// Dateioperationen laufen ausschließlich hier; der Renderer erhält nur die
 // Preload-API `mdECApi`. nodeIntegration bleibt aus, contextIsolation an.
 const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron')
 const path = require('node:path')
@@ -11,11 +11,11 @@ const GITHUB_URL = 'https://github.com/thomas-lauer/mdEC'
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null
-// Beim Start uebergebener Dateipfad (EXE-Argument), bis der Renderer bereit ist.
+// Beim Start übergebener Dateipfad (EXE-Argument), bis der Renderer bereit ist.
 let pendingFilePath = filePathFromArgv(process.argv)
-// Letzter vom Renderer gemeldeter Zustand (fuer die Beenden-Nachfrage).
+// Letzter vom Renderer gemeldeter Zustand (für die Beenden-Nachfrage).
 let lastState = { dirty: false, name: 'dokument.md', content: '', path: undefined }
-// Verhindert eine erneute Nachfrage, wenn wir das Fenster bewusst schliessen.
+// Verhindert eine erneute Nachfrage, wenn wir das Fenster bewusst schließen.
 let allowClose = false
 
 function filePathFromArgv(argv) {
@@ -40,7 +40,7 @@ function createWindow() {
     },
   })
 
-  // Externe Links (z. B. GitHub) im Standardbrowser oeffnen, nicht im Fenster.
+  // Externe Links (z. B. GitHub) im Standardbrowser öffnen, nicht im Fenster.
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//i.test(url)) {
       void shell.openExternal(url)
@@ -48,7 +48,7 @@ function createWindow() {
     return { action: 'deny' }
   })
 
-  // Falls eine Datei beim Start uebergeben wurde, nach dem Laden ausliefern.
+  // Falls eine Datei beim Start übergeben wurde, nach dem Laden ausliefern.
   mainWindow.webContents.on('did-finish-load', () => {
     void deliverPendingFile()
   })
@@ -60,7 +60,7 @@ function createWindow() {
     void mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'))
   }
 
-  // Bei ungespeicherten Aenderungen vor dem Schliessen nachfragen.
+  // Bei ungespeicherten Änderungen vor dem Schließen nachfragen.
   mainWindow.on('close', (event) => {
     if (allowClose || !lastState.dirty) return
     event.preventDefault()
@@ -80,14 +80,14 @@ async function promptSaveOnClose() {
     buttons: ['Speichern', 'Nicht speichern', 'Abbrechen'],
     defaultId: 0,
     cancelId: 2,
-    title: 'Ungespeicherte Aenderungen',
-    message: `Moechten Sie die Aenderungen an "${lastState.name || 'Dokument'}" speichern?`,
-    detail: 'Wenn Sie nicht speichern, gehen die Aenderungen verloren.',
+    title: 'Ungespeicherte Änderungen',
+    message: `Möchten Sie die Änderungen an "${lastState.name || 'Dokument'}" speichern?`,
+    detail: 'Wenn Sie nicht speichern, gehen die Änderungen verloren.',
   })
 
   if (choice === 2) return // Abbrechen -> Fenster bleibt offen
   if (choice === 1) {
-    // Nicht speichern -> schliessen erzwingen
+    // Nicht speichern -> schließen erzwingen
     allowClose = true
     mainWindow.close()
     return
@@ -138,7 +138,7 @@ function buildMenu() {
     {
       label: 'Datei',
       submenu: [
-        { label: 'Oeffnen …', accelerator: 'CmdOrCtrl+O', click: () => sendMenuCommand('open') },
+        { label: 'Öffnen …', accelerator: 'CmdOrCtrl+O', click: () => sendMenuCommand('open') },
         { label: 'Speichern', accelerator: 'CmdOrCtrl+S', click: () => sendMenuCommand('save') },
         {
           label: 'Speichern unter …',
@@ -162,7 +162,7 @@ function buildMenu() {
       label: 'Ansicht',
       submenu: [
         { label: 'Vorschau ein/aus', accelerator: 'CmdOrCtrl+P', click: () => sendMenuCommand('toggle-preview') },
-        { label: 'Beispiel zuruecksetzen', click: () => sendMenuCommand('reset-sample') },
+        { label: 'Beispiel zurücksetzen', click: () => sendMenuCommand('reset-sample') },
         { type: 'separator' },
         { role: 'reload' },
         { role: 'toggleDevTools' },
@@ -189,7 +189,7 @@ ipcMain.on('mdec:update-state', (_event, state) => {
 ipcMain.handle('mdec:open-file', async () => {
   if (!mainWindow) return null
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-    title: 'Markdown-Datei oeffnen',
+    title: 'Markdown-Datei öffnen',
     properties: ['openFile'],
     filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
   })
@@ -226,33 +226,18 @@ async function saveAs(name, content) {
 }
 
 // --- App-Lebenszyklus -------------------------------------------------------
-// Einzelinstanz: ein zweiter Start mit Datei-Argument reicht die Datei durch.
-const gotLock = app.requestSingleInstanceLock()
-if (!gotLock) {
-  app.quit()
-} else {
-  app.on('second-instance', (_event, argv) => {
-    const filePath = filePathFromArgv(argv)
-    if (filePath) {
-      pendingFilePath = filePath
-      void deliverPendingFile()
-    }
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
-    }
-  })
+// Mehrere Instanzen sind ausdrücklich erlaubt: Jeder Start (z. B. Doppelklick
+// auf eine weitere .md-Datei) öffnet ein eigenständiges Fenster mit eigener
+// Datei, sodass mehrere Dokumente gleichzeitig bearbeitet werden können.
+app.whenReady().then(() => {
+  buildMenu()
+  createWindow()
 
-  app.whenReady().then(() => {
-    buildMenu()
-    createWindow()
-
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
 
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-  })
-}
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit()
+})

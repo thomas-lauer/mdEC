@@ -91,3 +91,7 @@ Die App nutzt eine numerische Hauptversion. Dieser Stand startet bei Version `2`
 Das Projekt enthält einen GitHub-Actions-Workflow unter `.github/workflows/pages.yml`. Bei jedem Push auf `main` wird die App gebaut und per GitHub Pages veröffentlicht.
 
 Die Vite-Konfiguration nutzt `base: '/mdEC/'`, damit die App korrekt unter `https://thomas-lauer.github.io/mdEC/` läuft.
+
+---
+
+Teile von mdEC werden mit KI erstellt.

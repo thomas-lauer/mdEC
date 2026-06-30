@@ -1,17 +1,17 @@
 import { Marked, type Token, type Tokens } from 'marked'
 import DOMPurify from 'dompurify'
 
-// marked mit GitHub-Flavored-Markdown. Eine eigene Instanz haelt die
-// Konfiguration lokal und unabhaengig von globalen marked-Defaults.
+// marked mit GitHub-Flavored-Markdown. Eine eigene Instanz hält die
+// Konfiguration lokal und unabhängig von globalen marked-Defaults.
 const marked = new Marked({
   gfm: true,
   breaks: false,
 })
 
 function sanitize(html: string): string {
-  // Unterstreichung kennt Markdown nicht nativ; die Toolbar fuegt <u>...</u>
+  // Unterstreichung kennt Markdown nicht nativ; die Toolbar fügt <u>...</u>
   // ein. DOMPurify muss dieses Tag deshalb bewusst durchlassen.
-  // data-*-Attribute (z. B. data-source-line) laesst DOMPurify standardmaessig zu.
+  // data-*-Attribute (z. B. data-source-line) lässt DOMPurify standardmäßig zu.
   return DOMPurify.sanitize(html, {
     USE_PROFILES: { html: true },
     ADD_TAGS: ['u'],
@@ -29,11 +29,11 @@ export function renderMarkdown(markdown: string): string {
  * Wie renderMarkdown, versieht aber Block-Elemente mit der Quell-Zeile
  * (`data-source-line`, 0-basiert) – bis hinunter zu einzelnen Listenpunkten
  * (`<li>`) und Tabellenzeilen (`<tr>`), auch in verschachtelten Listen. So
- * kann ein Klick in die Vorschau praezise auf die Markdown-Stelle abgebildet
+ * kann ein Klick in die Vorschau präzise auf die Markdown-Stelle abgebildet
  * werden.
  *
- * Es wird Token fuer Token gerendert: Da `lexer` die Inline-Token (inkl.
- * Referenz-Links) bereits aufloest, liefert das pro Block korrektes HTML.
+ * Es wird Token für Token gerendert: Da `lexer` die Inline-Token (inkl.
+ * Referenz-Links) bereits auflöst, liefert das pro Block korrektes HTML.
  */
 export function renderMarkdownWithLines(markdown: string): string {
   const tokens = marked.lexer(markdown)

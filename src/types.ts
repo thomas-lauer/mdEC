@@ -2,7 +2,7 @@ export type Theme = 'light' | 'dark'
 
 export type ExportFormat = 'html' | 'pdf' | 'docx'
 
-/** Eine vom Electron-Main-Prozess geoeffnete Datei. */
+/** Eine vom Electron-Main-Prozess geöffnete Datei. */
 export interface OpenedFile {
   path: string
   name: string
@@ -18,12 +18,12 @@ export interface SaveResult {
 
 /**
  * Eng begrenzte Preload-API, die der Electron-Main-Prozess dem Renderer
- * ueber contextBridge bereitstellt. Im Web-Modus ist `window.mdECApi`
+ * über contextBridge bereitstellt. Im Web-Modus ist `window.mdECApi`
  * nicht vorhanden.
  */
 export interface MdECApi {
   readonly isDesktop: true
-  /** Datei-Dialog oeffnen und Inhalt einlesen. */
+  /** Datei-Dialog öffnen und Inhalt einlesen. */
   openFile(): Promise<OpenedFile | null>
   /** An bekannten Pfad speichern; ohne Pfad wie saveFileAs. */
   saveFile(payload: { path?: string; name: string; content: string }): Promise<SaveResult>
@@ -31,12 +31,12 @@ export interface MdECApi {
   saveFileAs(payload: { name: string; content: string }): Promise<SaveResult>
   /**
    * Aktuellen Zustand an den Main-Prozess melden, damit dieser beim Beenden
-   * bei ungespeicherten Aenderungen nachfragen (und ggf. speichern) kann.
+   * bei ungespeicherten Änderungen nachfragen (und ggf. speichern) kann.
    */
   updateState(state: { dirty: boolean; name: string; content: string; path?: string }): void
-  /** Beim Start uebergebene Datei (z. B. EXE-Argument). */
+  /** Beim Start übergebene Datei (z. B. EXE-Argument). */
   onOpenFile(callback: (file: OpenedFile) => void): void
-  /** Menue-Kommandos aus dem nativen Menue (oeffnen/speichern/export/...). */
+  /** Menü-Kommandos aus dem nativen Menü (öffnen/speichern/export/...). */
   onMenuCommand(callback: (command: MenuCommand) => void): void
 }
 

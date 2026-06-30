@@ -1,5 +1,5 @@
 // Standalone-HTML-Export: erzeugt aus dem bereits gerenderten, bereinigten
-// Vorschau-HTML eine eigenstaendige Datei mit eingebettetem Layout.
+// Vorschau-HTML eine eigenständige Datei mit eingebettetem Layout.
 
 const STYLE = `
 :root { color-scheme: light; }

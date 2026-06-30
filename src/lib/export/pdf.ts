@@ -1,7 +1,7 @@
 import { downloadBlob } from './html'
 
 // PDF-Export: erzeugt ein A4-Dokument aus der gerenderten Dokumentstruktur.
-// jspdf ist gross und wird deshalb dynamisch importiert, damit der Editor-
+// jspdf ist groß und wird deshalb dynamisch importiert, damit der Editor-
 // Start klein und schnell bleibt.
 
 interface Cursor {

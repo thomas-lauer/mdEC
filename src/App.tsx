@@ -21,45 +21,53 @@ const GITHUB_URL = 'https://github.com/thomas-lauer/mdEC'
 export default function App() {
   const isDesktop = typeof window !== 'undefined' && !!window.mdECApi
 
-  const [content, setContent] = useState<string>(() => loadContent(SAMPLE_DOC))
-  // Zuletzt gespeicherter Stand (Basis fuer "ungespeicherte Aenderungen").
+  // Im Desktop-Modus ist die Datei die Quelle der Wahrheit. Inhalt/Dateiname
+  // werden dort nicht im localStorage zwischengespeichert, damit sich mehrere
+  // gleichzeitig laufende Instanzen nicht gegenseitig überschreiben.
+  const [content, setContent] = useState<string>(() =>
+    isDesktop ? SAMPLE_DOC : loadContent(SAMPLE_DOC),
+  )
+  // Zuletzt gespeicherter Stand (Basis für "ungespeicherte Änderungen").
   const [savedContent, setSavedContent] = useState<string>(content)
-  const [fileName, setFileName] = useState<string>(() => loadFileName(DEFAULT_FILENAME))
+  const [fileName, setFileName] = useState<string>(() =>
+    isDesktop ? DEFAULT_FILENAME : loadFileName(DEFAULT_FILENAME),
+  )
   const [theme, setTheme] = useState<Theme>(() => loadTheme())
   // Einzelansicht: entweder die Vorschau ('preview', Standard) oder der
   // Markdown-Code ('edit'). Es ist immer nur eine der beiden sichtbar.
   const [mode, setMode] = useState<'edit' | 'preview'>('preview')
-  // Aktueller Dateipfad im Desktop-Modus (fuer "Speichern").
-  const currentPathRef = useRef<string | undefined>(undefined)
+  // Aktueller Dateipfad im Desktop-Modus (für "Speichern" und die Anzeige
+  // des vollen Pfads im Dateinamen-Feld).
+  const [filePath, setFilePath] = useState<string | undefined>(undefined)
 
   const editorRef = useRef<HTMLTextAreaElement>(null)
 
-  // Ungespeicherte Aenderungen, sobald der Inhalt vom gespeicherten Stand abweicht.
+  // Ungespeicherte Änderungen, sobald der Inhalt vom gespeicherten Stand abweicht.
   const dirty = content !== savedContent
 
   // --- Persistenz & Theme ---------------------------------------------------
   useEffect(() => {
-    saveContent(content)
-  }, [content])
+    if (!isDesktop) saveContent(content)
+  }, [content, isDesktop])
 
   useEffect(() => {
-    saveFileName(fileName)
-  }, [fileName])
+    if (!isDesktop) saveFileName(fileName)
+  }, [fileName, isDesktop])
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     saveTheme(theme)
   }, [theme])
 
-  // Zustand an den Electron-Main-Prozess melden (fuer die Beenden-Nachfrage).
+  // Zustand an den Electron-Main-Prozess melden (für die Beenden-Nachfrage).
   useEffect(() => {
     window.mdECApi?.updateState({
       dirty,
       name: fileName,
       content,
-      path: currentPathRef.current,
+      path: filePath,
     })
-  }, [content, fileName, dirty])
+  }, [content, fileName, dirty, filePath])
 
   // --- Toolbar --------------------------------------------------------------
   const handleAction = useCallback((action: ToolbarAction) => {
@@ -115,27 +123,27 @@ export default function App() {
     setContent(file.content)
     setSavedContent(file.content)
     setFileName(file.name)
-    currentPathRef.current = file.path
+    setFilePath(file.path)
   }, [])
 
   const handleSave = useCallback(async () => {
     const api = window.mdECApi
     if (!api) return
-    const result = await api.saveFile({ path: currentPathRef.current, name: fileName, content })
+    const result = await api.saveFile({ path: filePath, name: fileName, content })
     if (!result.canceled && result.path) {
-      currentPathRef.current = result.path
+      setFilePath(result.path)
       if (result.name) setFileName(result.name)
       setSavedContent(content)
       setMode('preview')
     }
-  }, [content, fileName])
+  }, [content, fileName, filePath])
 
   const handleSaveAs = useCallback(async () => {
     const api = window.mdECApi
     if (!api) return
     const result = await api.saveFileAs({ name: fileName, content })
     if (!result.canceled && result.path) {
-      currentPathRef.current = result.path
+      setFilePath(result.path)
       if (result.name) setFileName(result.name)
       setSavedContent(content)
       setMode('preview')
@@ -145,6 +153,19 @@ export default function App() {
   // --- Sonstiges ------------------------------------------------------------
   const handleResetSample = useCallback(() => {
     setContent(SAMPLE_DOC)
+  }, [])
+
+  // Eingabe im Dateinamen-Feld. Enthält sie einen Pfad-Trenner, wird sie als
+  // vollständiger Pfad behandelt; sonst als reiner Dateiname.
+  const handleFileNameChange = useCallback((input: string) => {
+    const sep = Math.max(input.lastIndexOf('/'), input.lastIndexOf('\\'))
+    if (sep >= 0) {
+      setFilePath(input)
+      setFileName(input.slice(sep + 1))
+    } else {
+      setFilePath(undefined)
+      setFileName(input)
+    }
   }, [])
 
   const handleExport = useCallback(
@@ -203,7 +224,7 @@ export default function App() {
       setContent(file.content)
       setSavedContent(file.content)
       setFileName(file.name)
-      currentPathRef.current = file.path
+      setFilePath(file.path)
     })
 
     api.onMenuCommand((command: MenuCommand) => {
@@ -241,7 +262,8 @@ export default function App() {
     <div className="app-shell">
       <Header
         fileName={fileName}
-        onFileNameChange={setFileName}
+        filePath={filePath}
+        onFileNameChange={handleFileNameChange}
         isDesktop={isDesktop}
         theme={theme}
         mode={mode}

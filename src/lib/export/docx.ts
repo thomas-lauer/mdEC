@@ -1,8 +1,8 @@
 import { downloadBlob } from './html'
 
 // DOCX-Export: DOCX ist kein HTML-Container. Der Export bildet die wichtigsten
-// Markdown-Strukturen gezielt auf Word-Elemente ab. Komplexe HTML-Sonderfaelle
-// koennen dabei vereinfacht dargestellt werden. docx wird dynamisch geladen.
+// Markdown-Strukturen gezielt auf Word-Elemente ab. Komplexe HTML-Sonderfälle
+// können dabei vereinfacht dargestellt werden. docx wird dynamisch geladen.
 
 export async function exportDocx(renderedHtml: string, fileName: string): Promise<void> {
   const docx = await import('docx')
