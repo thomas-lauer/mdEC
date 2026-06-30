@@ -45,7 +45,8 @@
     "publish": {
       "provider": "github",
       "owner": "thomas-lauer",
-      "repo": "mdEC"
+      "repo": "mdEC",
+      "releaseType": "release"
     },
     "files": [
       "dist/**/*",
